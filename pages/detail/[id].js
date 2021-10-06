@@ -36,6 +36,25 @@ const Post = ({ item, name }) => {
 
 export default Post;
 
+export async function getStaticPaths() {
+  const apiUrl = process.env.apiUrl;
+  const res = await Axios.get(apiUrl);
+  const data = res.data;
+  return{
+    // paths: [
+    //   { params: { id: "740" } },
+    //   { params: { id: "730" } },
+    //   { params: { id: "729" } },
+    // ],
+    paths: data.slice(0,9).map(item => ({
+      params: {
+        id: item.id.toString(),
+      }
+    })),
+    fallback: true,
+  }
+}
+
 export async function getServerSideProps(context) {
   const id = context.params.id;
   const apiUrl = `http://makeup-api.herokuapp.com/api/v1/products/${id}.json`;
